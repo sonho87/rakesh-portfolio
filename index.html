@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rakesh Kumar Lakshman — Operations & Supply Chain Leader</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0d0d0d;
+    --paper: #f5f0e8;
+    --gold: #c9963a;
+    --gold-light: #e8c97a;
+    --rust: #8b3a1a;
+    --teal: #1a4a4a;
+    --muted: #7a7060;
+    --line: rgba(13,13,13,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .hero-left {
+    background: var(--teal);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 5rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    right: -80px;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    border: 60px solid rgba(201,150,58,0.15);
+  }
+
+  .hero-left::after {
+    content: '';
+    position: absolute;
+    bottom: 60px;
+    left: -40px;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 30px solid rgba(201,150,58,0.1);
+  }
+
+  .hero-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 5vw, 5.5rem);
+    font-weight: 900;
+    color: #fff;
+    line-height: 0.95;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero-name span {
+    display: block;
+    color: var(--gold);
+  }
+
+  .hero-role {
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.6);
+    font-weight: 300;
+    line-height: 1.7;
+    max-width: 340px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .hero-contact {
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.8s;
+  }
+
+  .hero-contact a {
+    font-size: 0.8rem;
+    color: var(--gold-light);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+
+  .hero-contact a:hover { color: #fff; }
+
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5rem 4rem;
+    background: var(--paper);
+  }
+
+  .hero-years {
+    font-family: 'Playfair Display', serif;
+    font-size: 9rem;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--gold);
+    line-height: 1;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.5s;
+  }
+
+  .hero-years-label {
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.7s;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.9s;
+  }
+
+  .stat-item {}
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--teal);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-top: 0.3rem;
+  }
+
+  /* ─── SECTION BASE ─── */
+  section {
+    padding: 7rem 6vw;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section-eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 3.5rem;
+  }
+
+  /* ─── EXPERTISE ─── */
+  .expertise-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0;
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+
+  .expertise-card {
+    padding: 2.5rem;
+    border-bottom: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+
+  .expertise-card:hover { background: rgba(26,74,74,0.04); }
+
+  .expertise-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+
+  .expertise-card:hover::before { transform: scaleX(1); }
+
+  .expertise-icon {
+    font-size: 1.8rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .expertise-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    color: var(--teal);
+  }
+
+  .expertise-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ─── EXPERIENCE ─── */
+  .exp-section { background: var(--teal); }
+  .exp-section .section-eyebrow { color: var(--gold); }
+  .exp-section .section-title { color: #fff; }
+
+  .timeline {
+    position: relative;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 140px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 3rem;
+    margin-bottom: 3.5rem;
+    position: relative;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: 132px;
+    top: 8px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 3px solid var(--teal);
+  }
+
+  .timeline-date {
+    font-size: 0.72rem;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding-top: 4px;
+    text-align: right;
+    padding-right: 2rem;
+  }
+
+  .timeline-body {}
+
+  .timeline-company {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.3rem;
+  }
+
+  .timeline-role {
+    font-size: 0.8rem;
+    color: var(--gold-light);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .timeline-location {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 1rem;
+  }
+
+  .timeline-points {
+    list-style: none;
+  }
+
+  .timeline-points li {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.65;
+    margin-bottom: 0.5rem;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+
+  .timeline-points li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 0.75rem;
+  }
+
+  /* ─── IMPACT NUMBERS ─── */
+  .impact-section {
+    background: var(--ink);
+  }
+
+  .impact-section .section-eyebrow { color: var(--gold); }
+  .impact-section .section-title { color: #fff; }
+
+  .impact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 3px;
+    background: rgba(255,255,255,0.05);
+  }
+
+  .impact-card {
+    background: var(--ink);
+    padding: 3rem 2.5rem;
+    text-align: center;
+    transition: background 0.3s;
+  }
+
+  .impact-card:hover { background: rgba(201,150,58,0.08); }
+
+  .impact-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 0.8rem;
+  }
+
+  .impact-label {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    line-height: 1.5;
+  }
+
+  /* ─── PROJECTS ─── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2px;
+    background: var(--line);
+  }
+
+  .project-card {
+    background: var(--paper);
+    padding: 2.8rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+
+  .project-card:hover { transform: translateY(-4px); }
+
+  .project-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--teal);
+    padding: 0.3rem 0.8rem;
+    border-radius: 2px;
+    margin-bottom: 1.2rem;
+  }
+
+  .project-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.8rem;
+    line-height: 1.2;
+  }
+
+  .project-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .project-accent {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--gold) 0%, transparent 60%);
+    opacity: 0.12;
+  }
+
+  /* ─── SKILLS SECTION ─── */
+  .skills-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: start;
+  }
+
+  .skills-category {
+    margin-bottom: 2.5rem;
+  }
+
+  .skills-cat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 0.8rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .skill-tag {
+    font-size: 0.78rem;
+    color: var(--teal);
+    border: 1px solid var(--teal);
+    padding: 0.35rem 0.9rem;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+
+  .skill-tag:hover {
+    background: var(--teal);
+    color: #fff;
+  }
+
+  /* ─── JOURNEY MAP ─── */
+  .geography-row {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--line);
+  }
+
+  .geo-item {
+    flex: 1;
+    padding: 2.5rem;
+    border-right: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .geo-item:last-child { border-right: none; }
+
+  .geo-flag { font-size: 2.5rem; margin-bottom: 1rem; }
+  .geo-country {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 0.3rem;
+  }
+  .geo-role {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ─── CTA ─── */
+  .cta-section {
+    background: var(--gold);
+    text-align: center;
+    padding: 6rem 4rem;
+  }
+
+  .cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 900;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .cta-sub {
+    font-size: 1rem;
+    color: rgba(13,13,13,0.6);
+    margin-bottom: 2.5rem;
+  }
+
+  .cta-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s;
+  }
+
+  .btn-dark {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .btn-dark:hover {
+    background: var(--teal);
+  }
+
+  .btn-outline {
+    border: 2px solid var(--ink);
+    color: var(--ink);
+  }
+
+  .btn-outline:hover {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 768px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 4rem 2rem 3rem; min-height: 60vh; }
+    .hero-right { padding: 3rem 2rem; }
+    .hero-years { font-size: 6rem; }
+    section { padding: 4rem 2rem; }
+    .timeline::before { display: none; }
+    .timeline-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    .timeline-item::before { display: none; }
+    .timeline-date { text-align: left; padding-right: 0; }
+    .skills-two-col { grid-template-columns: 1fr; gap: 2rem; }
+    .geography-row { flex-direction: column; }
+    .geo-item { border-right: none; border-bottom: 1px solid var(--line); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero" style="border-bottom:1px solid var(--line); padding:0;">
+  <div class="hero-left">
+    <div class="hero-tag">Operations &amp; Supply Chain Portfolio</div>
+    <h1 class="hero-name">Rakesh<span>Lakshman</span></h1>
+    <p class="hero-role">Senior operations leader who bridges global supply chains, e-commerce systems, and emerging AI — across India, the UK, and the US.</p>
+    <div class="hero-contact">
+      <a href="mailto:rakesh_lakshman@outlook.com">rakesh_lakshman@outlook.com</a>
+      <a href="tel:+918747033955">+91 87470 33955</a>
+      <a href="https://www.linkedin.com/in/rakesh-lakshman-80b70637/" target="_blank">linkedin.com/in/rakesh-lakshman</a>
+      <a>Bangalore, India</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-years">14</div>
+    <div class="hero-years-label">Years of Operations Excellence</div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Continents Operated</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">7+</div>
+        <div class="stat-label">Brand Portfolios Managed</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">$25K</div>
+        <div class="stat-label">Peak Monthly Revenue (Founded)</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">200%</div>
+        <div class="stat-label">Sales Target Achievement</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GEOGRAPHY -->
+<section style="padding:4rem 6vw;">
+  <div class="section-eyebrow">Global Footprint</div>
+  <div class="section-title" style="margin-bottom:2rem;">Operated Across Three Markets</div>
+  <div class="geography-row">
+    <div class="geo-item">
+      <div class="geo-flag">🇮🇳</div>
+      <div class="geo-country">India</div>
+      <div class="geo-role">Campus Sutra · Blubirch · Genius18 · Vani Estates · Gajakesari<br>Amazon, Myntra, Flipkart marketplace operations</div>
+    </div>
+    <div class="geo-item">
+      <div class="geo-flag">🇬🇧</div>
+      <div class="geo-country">United Kingdom</div>
+      <div class="geo-role">Legend Footwear, London<br>100% same-day dispatch · Multi-country team management</div>
+    </div>
+    <div class="geo-item">
+      <div class="geo-flag">🇺🇸</div>
+      <div class="geo-country">United States</div>
+      <div class="geo-role">Artica India (Remote US operations)<br>China → US/UK/Canada freight · 7 brand portfolio · Amazon FBA</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EXPERTISE -->
+<section>
+  <div class="section-eyebrow">Core Competencies</div>
+  <div class="section-title">What I Do Best</div>
+  <div class="expertise-grid">
+    <div class="expertise-card">
+      <div class="expertise-icon">🏗️</div>
+      <div class="expertise-title">Supply Chain Architecture</div>
+      <div class="expertise-desc">End-to-end supply chain design from China sourcing through 3PL networks to last-mile delivery. Hands-on with Flexport, FedEx, DHL, and freight forwarders across three continents.</div>
+    </div>
+    <div class="expertise-card">
+      <div class="expertise-icon">📦</div>
+      <div class="expertise-title">Inventory Control & Planning</div>
+      <div class="expertise-desc">Demand forecasting, replenishment planning, and ERP reconciliation (SAP, NetSuite, OrderWise). Eliminated stock discrepancies for 7-brand portfolios valued at millions.</div>
+    </div>
+    <div class="expertise-card">
+      <div class="expertise-icon">🛒</div>
+      <div class="expertise-title">E-commerce Operations</div>
+      <div class="expertise-desc">Amazon FBA specialist with marketplace management experience on Amazon, Myntra, Flipkart, eBay. Achieved 100% same-day fulfilment at Legend Footwear London.</div>
+    </div>
+    <div class="expertise-card">
+      <div class="expertise-icon">🤝</div>
+      <div class="expertise-title">Vendor & 3PL Management</div>
+      <div class="expertise-desc">Negotiated POs, managed vendor SLAs, and coordinated multi-country warehouse networks. Onboarded enterprise clients including Samsung, Bosch, Reliance, and Croma.</div>
+    </div>
+    <div class="expertise-card">
+      <div class="expertise-icon">🤖</div>
+      <div class="expertise-title">AI Process Automation</div>
+      <div class="expertise-desc">Building AI-powered tools that automate inventory forecasting, vendor onboarding, and operations workflows. Currently developing fintech and lifestyle apps using AI infrastructure.</div>
+    </div>
+    <div class="expertise-card">
+      <div class="expertise-icon">🏠</div>
+      <div class="expertise-title">Property & Project Operations</div>
+      <div class="expertise-desc">Running vendor selection, construction supply chains, and client management for real estate projects at Vani Estates. Full lifecycle from material procurement to handover.</div>
+    </div>
+  </div>
+</section>
+
+<!-- IMPACT NUMBERS -->
+<section class="impact-section">
+  <div class="section-eyebrow">Proof of Work</div>
+  <div class="section-title">Numbers That Matter</div>
+  <div class="impact-grid">
+    <div class="impact-card">
+      <div class="impact-number">100%</div>
+      <div class="impact-label">Same-day order fulfilment rate at Legend Footwear London</div>
+    </div>
+    <div class="impact-card">
+      <div class="impact-number">250</div>
+      <div class="impact-label">Orders in first 48hrs for e-commerce brand launch</div>
+    </div>
+    <div class="impact-card">
+      <div class="impact-number">200%</div>
+      <div class="impact-label">Sales target achieved month-over-month at Blubirch</div>
+    </div>
+    <div class="impact-card">
+      <div class="impact-number">10×</div>
+      <div class="impact-label">Customer base growth at Genius18 before successful exit</div>
+    </div>
+    <div class="impact-card">
+      <div class="impact-number">7</div>
+      <div class="impact-label">Global brand portfolios managed simultaneously</div>
+    </div>
+    <div class="impact-card">
+      <div class="impact-number">$25K</div>
+      <div class="impact-label">Peak monthly revenue scaled before profitable exit</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="exp-section">
+  <div class="section-eyebrow">Career Journey</div>
+  <div class="section-title">Professional Experience</div>
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-date">Oct 2024<br>Present</div>
+      <div class="timeline-body">
+        <div class="timeline-company">Vani Estates</div>
+        <div class="timeline-role">Property &amp; Vendor Management Specialist</div>
+        <div class="timeline-location">📍 Bangalore, India</div>
+        <ul class="timeline-points">
+          <li>Running end-to-end material supply chain for construction projects</li>
+          <li>Vendor selection, contract negotiation and ongoing SLA management</li>
+          <li>Client management throughout buying, selling and remodeling lifecycle</li>
+          <li>AI-powered property trend forecasting and vendor onboarding automation</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">Sep 2023<br>Aug 2024</div>
+      <div class="timeline-body">
+        <div class="timeline-company">Artica India Pvt Ltd</div>
+        <div class="timeline-role">Inventory Control Manager (Remote US Operations)</div>
+        <div class="timeline-location">📍 Remote · China → US/UK/Canada</div>
+        <ul class="timeline-points">
+          <li>Directed international logistics via Flexport, FedEx, DHL across US, UK, Canada</li>
+          <li>Managed inventory planning for 7 brands including Doctors Choice, Slumberpod, Roxant</li>
+          <li>Monthly ERP (NetSuite) vs PO vs live stock reconciliation with Finance</li>
+          <li>Amazon FBA shipment planning based on sales velocity and warehouse levels</li>
+          <li>Implemented AI-based process improvements for inventory forecasting</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">Nov 2022<br>Sep 2023</div>
+      <div class="timeline-body">
+        <div class="timeline-company">Legend Footwear</div>
+        <div class="timeline-role">Inventory Operations Manager</div>
+        <div class="timeline-location">📍 London, United Kingdom</div>
+        <ul class="timeline-points">
+          <li>Achieved 100% same-day order fulfilment across Amazon and marketplace channels</li>
+          <li>Managed hybrid team across UK, India and Philippines</li>
+          <li>ERP (OrderWise) vs physical inventory audits, preventing theft and pilferage</li>
+          <li>Piloted AI-driven reporting and process automation, reducing stockouts</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">Nov 2019<br>Apr 2022</div>
+      <div class="timeline-body">
+        <div class="timeline-company">Blubirch Green Enabled IT Solutions</div>
+        <div class="timeline-role">Business E-commerce Manager</div>
+        <div class="timeline-location">📍 Karnataka, India</div>
+        <ul class="timeline-points">
+          <li>Managed enterprise client relationships: Samsung, Bosch, Reliance, Croma, Whirlpool</li>
+          <li>Sold and implemented SaaS-based reverse supply chain liquidation platform</li>
+          <li>Consistently achieved 200% of sales targets month-over-month</li>
+          <li>Awarded Best Employee of the Year for exceptional performance</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">Feb 2018<br>Nov 2020</div>
+      <div class="timeline-body">
+        <div class="timeline-company">Genius18 Pvt. Ltd.</div>
+        <div class="timeline-role">Operations Manager &amp; Co-Founder</div>
+        <div class="timeline-location">📍 Karnataka, India</div>
+        <ul class="timeline-points">
+          <li>Co-founded apparel e-commerce brand — Myntra, Flipkart, Amazon channels</li>
+          <li>Scaled monthly revenue from $10K to $25K USD; customer base grew 10×</li>
+          <li>Successfully exited the business with seamless stakeholder transition</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-date">Jul 2013<br>Dec 2017</div>
+      <div class="timeline-body">
+        <div class="timeline-company">Campus Sutra</div>
+        <div class="timeline-role">Operations Manager</div>
+        <div class="timeline-location">📍 Bangalore, India</div>
+        <ul class="timeline-points">
+          <li>Amazon FBA private label product research and marketplace management</li>
+          <li>Inventory and warehouse operations optimization for online sales</li>
+          <li>eBay and Amazon customer issue resolution and listing performance optimization</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- AI PROJECTS -->
+<section>
+  <div class="section-eyebrow">Innovation & AI</div>
+  <div class="section-title">Projects I've Built</div>
+  <div class="projects-grid">
+    <div class="project-card">
+      <div class="project-accent"></div>
+      <div class="project-tag">FinTech · App</div>
+      <div class="project-title">AI-Powered ITR Filing App</div>
+      <div class="project-desc">Building an iOS/Android application that automates income tax return filing for first-time filers in India. Full-stack development with AI-assisted tax guidance and CA partner integration.</div>
+    </div>
+    <div class="project-card">
+      <div class="project-accent"></div>
+      <div class="project-tag">E-commerce · Launch</div>
+      <div class="project-title">D2C Brand Launch (250 Orders / 48hrs)</div>
+      <div class="project-desc">Set up complete digital infrastructure for an e-commerce brand from scratch — WooCommerce, Razorpay, COD logic, order tracking, and AI-powered review systems. Result: 250 orders in the first 48 hours.</div>
+    </div>
+    <div class="project-card">
+      <div class="project-accent"></div>
+      <div class="project-tag">PropTech · AI</div>
+      <div class="project-title">Vastu Shastra Calculator (AAYA)</div>
+      <div class="project-desc">Built and deployed a specialized Vastu calculator app to GitHub Pages. Three-step tool: site dimensions → setback calculations → auspicious foundation recommendations with Varga breakdown. Migrating to Netlify with serverless AI backend.</div>
+    </div>
+    <div class="project-card">
+      <div class="project-accent"></div>
+      <div class="project-tag">Lifestyle · App</div>
+      <div class="project-title">Astrology &amp; Numerology Consultation Platform</div>
+      <div class="project-desc">AI-powered consultation tool combining Vedic Jyotish astrology, Chaldean numerology, and palmistry data to deliver personalized client insights — automating what was previously done entirely manually.</div>
+    </div>
+    <div class="project-card">
+      <div class="project-accent"></div>
+      <div class="project-tag">Trade · SaaS Concept</div>
+      <div class="project-title">FTA Compliance Automation Platform</div>
+      <div class="project-desc">Conceptualized an AI-powered compliance platform for SME exporters under the India-EU FTA — targeting organic spices, textiles, and marine products. No-code MVP design using Airtable, Make.com, and OpenAI API.</div>
+    </div>
+    <div class="project-card">
+      <div class="project-accent"></div>
+      <div class="project-tag">Trading · Pine Script</div>
+      <div class="project-title">ICT V4 Trading Indicator (NSE)</div>
+      <div class="project-desc">Custom Pine Script indicator for NSE equities with BUY/SHORT signals based on trend, liquidity sweeps, and Break of Structure. Three-target exit system (1.5R / 2.5R / 4R). Supports both intraday and swing modes.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section style="background: rgba(26,74,74,0.03);">
+  <div class="section-eyebrow">Technical Toolkit</div>
+  <div class="section-title">Skills &amp; Platforms</div>
+  <div class="skills-two-col">
+    <div>
+      <div class="skills-category">
+        <div class="skills-cat-label">Operations & Logistics</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Global Supply Chain</span>
+          <span class="skill-tag">3PL Management</span>
+          <span class="skill-tag">Amazon FBA</span>
+          <span class="skill-tag">Inventory Planning</span>
+          <span class="skill-tag">Reverse Logistics</span>
+          <span class="skill-tag">International Freight</span>
+          <span class="skill-tag">Vendor Negotiation</span>
+          <span class="skill-tag">FF&E Logistics</span>
+        </div>
+      </div>
+      <div class="skills-category">
+        <div class="skills-cat-label">ERP & Systems</div>
+        <div class="skill-tags">
+          <span class="skill-tag">SAP</span>
+          <span class="skill-tag">NetSuite</span>
+          <span class="skill-tag">OrderWise</span>
+          <span class="skill-tag">ClickUp</span>
+          <span class="skill-tag">Shopify</span>
+          <span class="skill-tag">WooCommerce</span>
+          <span class="skill-tag">Razorpay</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="skills-category">
+        <div class="skills-cat-label">E-commerce & Marketplaces</div>
+        <div class="skill-tags">
+          <span class="skill-tag">Amazon</span>
+          <span class="skill-tag">Myntra</span>
+          <span class="skill-tag">Flipkart</span>
+          <span class="skill-tag">eBay</span>
+          <span class="skill-tag">Marketplace Management</span>
+          <span class="skill-tag">SaaS Liquidation</span>
+        </div>
+      </div>
+      <div class="skills-category">
+        <div class="skills-cat-label">Tech & Innovation</div>
+        <div class="skill-tags">
+          <span class="skill-tag">AI Automation</span>
+          <span class="skill-tag">App Development</span>
+          <span class="skill-tag">Pine Script</span>
+          <span class="skill-tag">Airtable</span>
+          <span class="skill-tag">Make.com</span>
+          <span class="skill-tag">GitHub Pages</span>
+          <span class="skill-tag">Bubble.io</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section>
+  <div class="section-eyebrow">Education</div>
+  <div class="section-title">Academic Background</div>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 2px; background: var(--line);">
+    <div style="background: var(--paper); padding: 2.5rem;">
+      <div style="font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:0.8rem;">2010 – 2012</div>
+      <div style="font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; color:var(--teal); margin-bottom:0.4rem;">MBA — Business Administration</div>
+      <div style="font-size:0.85rem; color:var(--muted);">CMR University, Bangalore · Graduated with Honours · 7.345 GPA</div>
+    </div>
+    <div style="background: var(--paper); padding: 2.5rem;">
+      <div style="font-size:0.7rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold); margin-bottom:0.8rem;">2006 – 2010</div>
+      <div style="font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; color:var(--teal); margin-bottom:0.4rem;">Bachelor of Engineering</div>
+      <div style="font-size:0.85rem; color:var(--muted);">VTU University, Bangalore</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" style="border-bottom:none;">
+  <div class="cta-title">Let's Build Something Together</div>
+  <div class="cta-sub">Senior Operations · Supply Chain · FF&amp;E Logistics · Dubai &amp; Global Roles</div>
+  <div class="cta-btns">
+    <a href="mailto:rakesh_lakshman@outlook.com" class="btn btn-dark">Get In Touch</a>
+    <a href="https://www.linkedin.com/in/rakesh-lakshman-80b70637/" target="_blank" class="btn btn-outline">LinkedIn Profile</a>
+  </div>
+</section>
+
+</body>
+</html>
