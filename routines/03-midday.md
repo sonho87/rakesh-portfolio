@@ -15,6 +15,13 @@ Check open positions and GTT health. Calculate trail-stop levels. When condition
 
 ## STEP-BY-STEP
 
+### Step 0 — NSE trading-day check (NEW v3.3)
+```
+Read: /Users/rakesh/AAYA Calculation/aaya-v3/data/nse-holidays-2026.txt
+If today's date (YYYY-MM-DD) is in the file → exit silently. NSE closed,
+no LTP to check, no trail stops to suggest.
+```
+
 ### Step 1 — Read memory
 ```
 Read: POSITIONS.md

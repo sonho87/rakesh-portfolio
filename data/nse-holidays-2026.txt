@@ -1,0 +1,33 @@
+# NSE Equity Trading Holidays — Calendar Year 2026
+# Format: YYYY-MM-DD  Holiday name
+# Source: https://www.nseindia.com/resources/exchange-communication-holidays
+# Last verified: 2026-04-26 (verify against NSE annually before each FY)
+#
+# Each AAYA cron must read this file and exit silently if today's date is in it.
+# Lines starting with # are comments and ignored.
+
+2026-01-26  Republic Day
+2026-02-17  Mahashivratri
+2026-03-05  Holi
+2026-03-27  Ram Navami
+2026-04-03  Good Friday
+2026-04-10  Mahavir Jayanti
+2026-04-14  Dr. Baba Saheb Ambedkar Jayanti
+2026-05-01  Maharashtra Day
+2026-05-27  Bakri Eid (tentative — confirm 1 week prior)
+2026-06-25  Muharram (tentative — confirm 1 week prior)
+2026-08-27  Ganesh Chaturthi (tentative)
+2026-10-02  Mahatma Gandhi Jayanti
+2026-10-21  Dussehra / Vijaya Dashami
+2026-11-09  Diwali Laxmi Pujan (tentative — Muhurat trading separately announced)
+2026-11-10  Diwali Balipratipada
+2026-11-24  Guru Nanak Jayanti
+2026-12-25  Christmas
+
+# Notes:
+# - Saturdays and Sundays are not in this list — the cron's day-of-week filter
+#   already excludes them.
+# - Ramzan Eid, Bakri Eid, Muharram, Ganesh Chaturthi, Diwali dates may shift
+#   ±1 day based on moon sighting / state notification. Verify weekly.
+# - Special Muhurat trading sessions (Diwali) are NOT regular trading and
+#   AAYA crons should exit on the date even if NSE briefly opens.

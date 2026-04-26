@@ -204,18 +204,27 @@ But we can still get smarter on entry timing. v3.3 introduces a two-stage entry:
 
 ```
 PRIMARY ENTRY (placed by 02-market-open, ~9:23 AM):
-  AMO LIMIT BUY @ LTP + 0.1%, tick-rounded to Rs 0.05, validity DAY
+  Regular LIMIT BUY @ LTP + 0.1%, tick-rounded to Rs 0.05, validity DAY
+  variety: regular   (NOT amo — market is already open at 9:23 AM,
+                      AMO orders are rejected during market hours.
+                      AMO is only valid 4:00 PM – 8:55 AM next day.)
   → tries to fill near opening auction price
   → most fills happen here on a healthy open
 
 FALLBACK ENTRY (placed only if primary unfilled by 9:30 AM):
-  Conditions to qualify:
+  HARD GUARD: If today is FRIDAY → skip the fallback entirely.
+              A Friday-only fallback would force an exit at the 04-eod cron
+              (3:11 PM same day), guaranteeing a ~0.3% round-trip cost loss
+              with no time for the thesis to play out. Primary fill on Friday
+              or no entry.
+  Conditions to qualify (Mon-Thu only):
     (a) Stock NOT down >1% from prev close (knife guard)
     (b) Stock NOT up >2% from prev close (chase guard)
     (c) Stock STILL passes Gate B7 (relative strength) at this LTP
     (d) VIX has not spiked above 22 since pre-market check
   If all 4 met:
-    Fresh LIMIT BUY @ current LTP + 0.05%, tick-rounded, validity 30 min
+    Fresh regular LIMIT BUY @ current LTP + 0.05%, tick-rounded, validity DAY
+    (one fallback attempt only; no further retries that day)
   Else:
     Cancel primary, log "skipped — entry conditions failed", no entry today.
 
@@ -223,9 +232,10 @@ HARD SKIPS (any time during entry window):
   - Opening gap > 2% above prev close → skip (chase rule)
   - Stock down > 1% from prev close → skip (knife guard NEW v3.3)
   - VIX jumps to ≥ 22 → skip + cancel any pending order (regime flip)
+  - NSE trading holiday → all crons exit silently (see data/nse-holidays-2026.txt)
 ```
 
-This still avoids falling knives (down >1% = skip), but lets us pick up healthy intraday pullbacks (down 0–1%) that would otherwise miss the AMO fill window. Never market orders at entry except for the same-day re-entry within 30 min of an AMO rejection.
+This still avoids falling knives (down >1% = skip), but lets us pick up healthy intraday pullbacks (down 0–1%) that would otherwise miss the opening fill window. Never market orders at entry except for the same-day re-entry within 30 min of a rejection.
 
 ---
 

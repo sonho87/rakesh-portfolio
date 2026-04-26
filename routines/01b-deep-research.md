@@ -18,6 +18,40 @@ Better to occasionally drop a valid setup than to enter a stock with a known red
 
 ## STEP-BY-STEP
 
+### Step 0 — Trading day + readiness gate (NEW v3.3 fix)
+
+**0a. NSE holiday check.**
+```
+Read: /Users/rakesh/AAYA Calculation/aaya-v3/data/nse-holidays-2026.txt
+If today's date (YYYY-MM-DD) is in the file → exit silently, no Slack.
+```
+
+**0b. Wait for 01-premarket to finish (readiness probe).**
+01-premarket fires at 8:48 AM and may take 5–15 min for a full Gates A→E scan. We must not run on stale data.
+```
+Read RESEARCH-LOG.md
+Look for an entry dated today (YYYY-MM-DD) with a "Trade ideas" or "Finalists" or
+  "ACTION FOR 9:20 AM CRON" / "GREEN-LIST FOR 9:23 AM" section produced TODAY.
+
+If today's entry exists AND has finalists → proceed.
+If today's entry exists AND says "Gate A panic" or "0 picks today" → exit silently, no work to do.
+If today's entry does NOT exist yet:
+  - Wait 60 seconds
+  - Re-read RESEARCH-LOG.md
+  - Repeat up to 3 times (total wait: ~3 min)
+  - If still missing after 3 retries:
+      Slack to D0AQCRLP7SP: "⚠️ AAYA v3.3: 01b deep-research fired but
+        01-premarket has not produced today's entry. Skipping deep-research."
+      Exit.
+```
+
+**0c. Idempotency check.**
+```
+If today's RESEARCH-LOG.md entry ALREADY contains a "## DEEP RESEARCH RESULTS" subsection:
+  → Already ran today (manual re-run, retry, or auto-resume). Exit silently.
+  → Do NOT re-process candidates; the green-list is final.
+```
+
 ### Step 1 — Read state
 ```
 Read: /Users/rakesh/AAYA Calculation/aaya-v3/RESEARCH-LOG.md (today's entry — has finalists)

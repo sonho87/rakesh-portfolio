@@ -14,6 +14,14 @@ Compute weekly stats. Grade performance against Nifty. Update PERFORMANCE.md. Pr
 
 ## STEP-BY-STEP
 
+### Step 0 — NSE trading-day check (NEW v3.3)
+```
+Read: /Users/rakesh/AAYA Calculation/aaya-v3/data/nse-holidays-2026.txt
+If today's date is a holiday → exit silently. If Friday was a holiday,
+the weekly review can wait until Monday's review-of-prior-week (the
+04-eod cron's "Friday equivalent" already handled position exits).
+```
+
 ### Step 1 — Read all memory
 ```
 Read: TRADING-STRATEGY.md

@@ -15,6 +15,14 @@ You are a stateless agent. Read memory files, do research using FREE tools only,
 
 ## STEP-BY-STEP
 
+### Step 0 — NSE trading-day check (NEW v3.3)
+```
+Read: /Users/rakesh/AAYA Calculation/aaya-v3/data/nse-holidays-2026.txt
+If today's date (YYYY-MM-DD) is in the file → exit silently, no Slack, no commit.
+NSE holidays don't trade. Saturday/Sunday are excluded by the cron's
+day-of-week filter (1-5), but mid-week holidays must be caught here.
+```
+
 ### Step 1 — Read memory
 ```
 Read: /Users/rakesh/AAYA Calculation/aaya-v3/TRADING-STRATEGY.md

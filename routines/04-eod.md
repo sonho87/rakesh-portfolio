@@ -16,12 +16,28 @@ Two jobs depending on day:
 
 ## STEP-BY-STEP
 
+### Step 0 — NSE trading-day check (NEW v3.3) — CRITICAL FOR FRIDAY EXIT
+```
+Read: /Users/rakesh/AAYA Calculation/aaya-v3/data/nse-holidays-2026.txt
+If today's date is a holiday → exit silently. NSE didn't trade today.
+
+⚠️ CRITICAL: If TOMORROW is a holiday AND today is the last trading day before
+a 2+ day market closure (e.g. Thu before Fri holiday + weekend = 4-day closure),
+treat today as a "Friday equivalent" — run the FRIDAY TIME STOP workflow.
+We cannot hold over a 3-day or 4-day weekend any more than a 2-day one.
+
+Detection logic:
+  1. Compute next 4 calendar days.
+  2. For each, check: is it Saturday/Sunday OR in nse-holidays-2026.txt?
+  3. If next 2+ consecutive days are non-trading → today = "Friday equivalent"
+```
+
 ### Step 1 — Day detection
 ```
 Read system date. Identify day of week.
-If Monday-Thursday → run DAILY workflow (Step 2-6).
-If Friday → run FRIDAY TIME STOP workflow (Step 7-12).
-If Saturday/Sunday → should not fire, exit immediately.
+If Monday-Thursday AND not "Friday equivalent" → run DAILY workflow (Step 2-6).
+If Friday OR "Friday equivalent" → run FRIDAY TIME STOP workflow (Step 7-12).
+If Saturday/Sunday → should not fire (cron has 1-5 filter), exit immediately.
 ```
 
 ### Step 2 (Mon-Thu) — Read memory + Kite state

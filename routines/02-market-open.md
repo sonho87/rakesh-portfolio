@@ -19,6 +19,13 @@ Execute the green-list from RESEARCH-LOG.md (only candidates that passed Stage F
 
 ## STEP-BY-STEP
 
+### Step 0 — NSE trading-day check (NEW v3.3)
+```
+Read: /Users/rakesh/AAYA Calculation/aaya-v3/data/nse-holidays-2026.txt
+If today's date (YYYY-MM-DD) is in the file → exit silently. No Kite calls,
+no orders. NSE is closed.
+```
+
 ### Step 1 — Read memory
 ```
 Read: TRADING-STRATEGY.md
@@ -82,7 +89,9 @@ Record each order ID with timestamp.
 
 ### Step 5b — Intraday fallback entry (v3.3 hybrid step 2)
 
-After 7 minutes (~9:30 AM), check the primary orders:
+**🚫 HARD SKIP — FRIDAY:** If today is Friday, skip Step 5b entirely. Primary fill on Friday or no entry. Reason: 04-eod cron at 3:11 PM force-exits everything Friday — a fallback fill at 9:30 AM with mandatory market-sell at 3:11 PM same day = guaranteed loss after 0.3% round-trip costs (~Rs 99 per Rs 33K trade). The thesis needs ≥1 full session.
+
+After 7 minutes (~9:30 AM, Mon-Thu only), check the primary orders:
 ```
 Call: mcp__kite__get_orders
 For each primary order placed in Step 5:
@@ -90,15 +99,16 @@ For each primary order placed in Step 5:
   - If status == OPEN/PENDING and ltp not yet hit limit:
        Cancel the primary order (mcp__kite__cancel_order)
        Then re-evaluate FALLBACK conditions:
-         (a) Stock NOT down >1% from prev close
-         (b) Stock NOT up >2% from prev close
-         (c) Gate B7 still holds at current LTP
-         (d) VIX still < 22
-       If ALL 4 pass:
-         Place fresh LIMIT @ current LTP + 0.05%, validity DAY
-         (cron will re-check ~30 min later, same logic — but only one fallback attempt; after that, skip the trade)
+         (a) Today NOT Friday  ←── NEW v3.3 fix
+         (b) Stock NOT down >1% from prev close
+         (c) Stock NOT up >2% from prev close
+         (d) Gate B7 still holds at current LTP
+         (e) VIX still < 22
+       If ALL 5 pass:
+         Place fresh regular LIMIT @ current LTP + 0.05%, validity DAY
+         (only one fallback attempt; no further retries that day)
        Else:
-         Log "fallback failed: [reason]", skip this stock for the day.
+         Log "fallback skipped: [reason]", no entry for this stock today.
 ```
 
 Note: Only ONE fallback attempt per stock per day. If the fallback also doesn't fill, no entry today.
