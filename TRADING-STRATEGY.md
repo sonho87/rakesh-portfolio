@@ -1,7 +1,7 @@
-# AAYA v3.2 — Trading Strategy (The Rulebook)
+# AAYA v3.3 — Trading Strategy (The Rulebook)
 
 **Last updated:** 2026-04-26
-**Version:** 3.2 (regime-aware Gate A + relative strength B7)
+**Version:** 3.3 (hybrid entry + deep-research red-flag stage)
 **Status:** ACTIVE
 **Capital:** Rs 1,00,000
 **Hold period:** Maximum 1 week (Mon entry → Fri exit mandatory)
@@ -42,6 +42,59 @@ No hardcoded watchlist. Every morning the pre-market cron scans the full Nifty 5
 NATIONALUM, VEDL, MOTHERSON, MAHABANK, Accutas — showing the filter works across PSUs, commodities, auto ancillaries, banks, and small-cap compounders.
 
 **Philosophy:** "Monopoly/duopoly with quality" is a PROPERTY to verify on candidates, not a pre-curated list. A PSU can qualify. A Nifty 50 name can be skipped. The filter is the decision-maker.
+
+---
+
+## ENTRY PIPELINE — Gates A → E + Deep Research red-flag stage (v3.3)
+
+After Gate E produces 0–3 finalists, a NEW stage runs **between pre-market (8:48 AM) and market-open (9:23 AM):**
+
+### Stage F — Deep Research Red-Flag Scan (NEW v3.3, runs at 9:00 AM)
+
+A dedicated cron (`aaya-01b-deep-research`) per-stock investigates each finalist for hard red flags. ANY red flag → drop the stock, no entry.
+
+```
+F1. NEWS SCAN (last 30 days)
+    WebSearch: "[STOCK] news"
+    HARD RED FLAGS (drop):
+      - SEBI / RBI / income-tax investigation announced
+      - Promoter resignation / arrest
+      - Auditor resignation
+      - Material loss / accident / fire / litigation
+      - Major customer loss (>20% of revenue)
+      - Credit rating downgrade
+
+F2. CATALYST CALENDAR
+    HARD RED FLAGS (drop):
+      - Earnings call within next 5 trading days (gap risk)
+      - Ex-dividend within next 3 days (price drop priced in)
+
+F3. INSIDER ACTIVITY (NSE corporate filings)
+    HARD RED FLAGS (drop):
+      - Promoter selling > 0.5% of float in last 30 days
+    SOFT SIGNALS (note, don't drop):
+      - Promoter buying = +1 conviction note in RESEARCH-LOG
+
+F4. RETAIL MANIA CHECK
+    WebSearch "[STOCK] stock twitter today"
+    HARD RED FLAG (drop):
+      - Parabolic retail mania detected (top trending, multiple viral threads)
+    Reasoning: retail-driven parabolas are top signals, not entry signals.
+
+F5. ANALYST SANITY CHECK
+    WebSearch "[STOCK] brokerage target price 2026"
+    SOFT (don't drop, just note): at least one upgrade in last 30 days
+
+F6. SECTOR ROTATION CHECK
+    Cross-reference morning sector heatmap.
+    HARD RED FLAG (drop):
+      - Sector was top-3 performer 90 days ago AND is now bottom-3
+        (clear rotation OUT of the theme)
+```
+
+**Output:** Either GREEN (passes all hard red flags → 02-market-open places the order) or RED (dropped → reason logged in RESEARCH-LOG.md, Slack note).
+
+The deep-research agent is allowed to be slightly imperfect — better to occasionally drop a valid setup than to enter a stock with a known red flag.
 
 ---
 
@@ -143,8 +196,36 @@ E4. Skip any stock that cost > Rs 33,000 per share (unaffordable).
 
 ---
 
-### ORDER TYPE
-AMO LIMIT at LTP + 0.1%, tick-rounded to Rs 0.05. Never market orders at entry (except re-entry within 30 min of fill if AMO was rejected).
+### ORDER TYPE — Hybrid entry (v3.3)
+
+We are a momentum/breakout strategy. We buy AT or slightly ABOVE current price to confirm the trend. We never "wait for the dip" because that's how falling knives are caught. Falling-knife risk is already mitigated by Gates B1, B3, B4, B5, B7, C4 — a stock that passes those checks cannot mathematically be a knife.
+
+But we can still get smarter on entry timing. v3.3 introduces a two-stage entry:
+
+```
+PRIMARY ENTRY (placed by 02-market-open, ~9:23 AM):
+  AMO LIMIT BUY @ LTP + 0.1%, tick-rounded to Rs 0.05, validity DAY
+  → tries to fill near opening auction price
+  → most fills happen here on a healthy open
+
+FALLBACK ENTRY (placed only if primary unfilled by 9:30 AM):
+  Conditions to qualify:
+    (a) Stock NOT down >1% from prev close (knife guard)
+    (b) Stock NOT up >2% from prev close (chase guard)
+    (c) Stock STILL passes Gate B7 (relative strength) at this LTP
+    (d) VIX has not spiked above 22 since pre-market check
+  If all 4 met:
+    Fresh LIMIT BUY @ current LTP + 0.05%, tick-rounded, validity 30 min
+  Else:
+    Cancel primary, log "skipped — entry conditions failed", no entry today.
+
+HARD SKIPS (any time during entry window):
+  - Opening gap > 2% above prev close → skip (chase rule)
+  - Stock down > 1% from prev close → skip (knife guard NEW v3.3)
+  - VIX jumps to ≥ 22 → skip + cancel any pending order (regime flip)
+```
+
+This still avoids falling knives (down >1% = skip), but lets us pick up healthy intraday pullbacks (down 0–1%) that would otherwise miss the AMO fill window. Never market orders at entry except for the same-day re-entry within 30 min of an AMO rejection.
 
 ---
 
@@ -218,3 +299,4 @@ If entry_price > Rs 33,000 → skip (can't afford minimum whole share).
 | 2026-04-24 | v3.0 | Initial — 1-week rotation, ATR stops, GTT OCO, Friday time stop | Moved from v2 buy-and-hold to active rotation per user directive |
 | 2026-04-24 | v3.1 | Filter tune: B1 tightened to 5%, RSI cap 80, volume 3-of-5 days, 200-SMA per stock, banking exception, 3/6-month combo, Revenue+EPS YoY gates, promoter buying +FII bonuses, sector diversification (Gate E) | User evaluation of v3.0 filter — six corrections adopted, one rejected (analyst upgrades — lagging indicator) |
 | 2026-04-26 | v3.2 | (1) Replaced hard "Nifty 500 > 200-SMA" Gate A1 with regime-aware decision matrix (VIX panic gate + breadth-based position scaling). (2) Added Gate B7 — relative strength (stock 30d return − index 30d return ≥ +5%). | **Evidence override of "no rule change before 20 trades"**: User's manual P&L Apr 13–26 (4 trades, 75% win rate, 6.1× W/L ratio, +Rs 8,935 net on Rs 1L = ~9% in 2 weeks) demonstrably worked DURING a Nifty 500 drawdown. Stocks traded (BEL, NATIONALUM, ACUTAAS, VEDL) all had idiosyncratic strength independent of index. Old Gate A1 would have blocked all 4 entries. Removing a rule that demonstrably blocks profitable setups is conservative, not aggressive. |
+| 2026-04-26 | v3.3 | (1) Hybrid entry: AMO LIMIT primary + intraday fallback LIMIT if primary unfilled by 9:30 AM, with explicit knife-guard (skip if stock down >1%) and chase-guard (skip if up >2%). (2) New Stage F — Deep Research red-flag scan (cron `aaya-01b-deep-research` at 9:00 AM) inspects each finalist for SEBI/RBI actions, promoter exits, auditor resignations, earnings within 5 days, promoter selling >0.5% float, retail mania, sector rotation. ANY hard red flag → drop. | User raised valid concerns about (a) entry mechanics ("are we waiting for dip or buying market?") and (b) need for a per-stock research agent that "may not be perfect but we will reach somewhere." Hybrid entry catches healthy pullbacks without catching knives; deep-research stage prevents the obvious "I should have known" losses (SEBI announcements, ex-promoter dumps, earnings gaps). Both upgrades layered ON TOP of v3.2 filter — no existing rule weakened. |

@@ -1,17 +1,20 @@
-# 02 — Market Open Execution (9:20 AM IST, Mon-Fri)
+# 02 — Market Open Execution (9:23 AM IST, Mon-Fri) — v3.3
 
-You are running the AAYA v3 market-open execution cron. This fires 5 minutes after NSE opens (9:15 AM), giving the opening auction time to settle.
+You are running the AAYA v3.3 market-open execution cron. This fires after `01b-deep-research` (9:00 AM) so the green-list is already finalised.
 
 ## YOUR ROLE
 
-Execute the trade plan from RESEARCH-LOG.md. Confirm any AMO fills. Place GTT OCO on every new position. Notify Rakesh in Slack ONLY if a trade was placed.
+Execute the green-list from RESEARCH-LOG.md (only candidates that passed Stage F deep research). Confirm any AMO fills from overnight. Place GTT OCO on every new position. Use the v3.3 hybrid entry — primary AMO LIMIT + intraday fallback if primary doesn't fill.
 
 ## HARD RULES
 
-- **Never enter a trade that wasn't in this morning's RESEARCH-LOG.md** (unless emergency triggered by Rakesh manually)
+- **Only enter stocks on the GREEN-LIST from `01b-deep-research`'s scan today.** Any candidate marked RED or dropped is forbidden.
 - **Never enter without placing GTT OCO immediately after fill** — naked positions are prohibited
-- **Never exceed 3 open positions**
+- **Never exceed max_positions** from Gate A regime mode (2 in REDUCED, 3 in NORMAL)
 - **Never deploy more than Rs 40,000 in a single stock**
+- **Knife guard**: Never enter if stock is down >1% from prev close at order time
+- **Chase guard**: Never enter if stock is up >2% from prev close (gap-up rule)
+- **Regime flip guard**: If VIX has spiked to ≥22 since pre-market, cancel all pending and skip
 - If Kite session is expired: stop, send urgent Slack, do nothing else
 
 ## STEP-BY-STEP
@@ -40,27 +43,31 @@ For each filled AMO order that doesn't yet have a GTT:
 - Note: stock, fill price, quantity, order ID
 - Mark for GTT placement in Step 5
 
-### Step 4 — Re-validate trade plan for today
-For each candidate in today's RESEARCH-LOG.md:
-```
-Call: mcp__kite__get_ltp (instrument tokens)
-```
-Revalidate entry gate at current price:
-- Still within 1% of 52-week high?
-- Opening gap < 2% (if gap is bigger, SKIP the trade — chasing is prohibited)
-- RSI still 50-72?
+### Step 4 — Re-validate green-list at market open
 
-If PASS → proceed to Step 5. If FAIL → log "skipped, gate failed" and move on.
+Read the GREEN-LIST FOR 9:23 AM EXECUTION from today's RESEARCH-LOG.md (set by `01b-deep-research`). If no green-list section exists or it's empty → exit silently, no orders.
 
-### Step 5 — Place new AMO LIMIT orders (if needed)
-**Only place new orders if:**
-- Fewer than 3 current open positions
-- Capital available (cash >= required deployment + Rs 5,000 buffer)
-- Today's plan has qualifying candidates
+For each green-list candidate:
+```
+Call: mcp__kite__get_ltp / mcp__kite__get_quotes
+```
+
+Revalidate at current price:
+- ✅ Still within 5% of 52-week high (B1)? — sanity check
+- ✅ Opening gap < 2% above prev close — if gap bigger, SKIP (chase guard)
+- ✅ Stock NOT down >1% from prev close — if it is, SKIP (knife guard, v3.3 NEW)
+- ✅ Gate B7 still holds — re-compute (stock 30d return - Nifty 500 30d return) ≥ +5%
+- ✅ VIX still < 22 — fetch via WebSearch / Kite quotes for VIX index (regime guard)
+
+If ALL pass → place primary order in Step 5. If ANY fail → log "skipped, [reason]" and move to next.
+
+### Step 5 — Place primary entry order (v3.3 hybrid step 1)
+
+For each candidate that passed Step 4 revalidation, AND we still have headroom (open_count < max_positions, cash >= position_size + Rs 5,000 buffer):
 
 ```
 mcp__kite__place_order
-  variety: amo
+  variety: regular         # NOT amo — market is already open
   tradingsymbol: [STOCK]
   exchange: NSE
   transaction_type: BUY
@@ -71,7 +78,30 @@ mcp__kite__place_order
   validity: DAY
 ```
 
-Record each order ID.
+Record each order ID with timestamp.
+
+### Step 5b — Intraday fallback entry (v3.3 hybrid step 2)
+
+After 7 minutes (~9:30 AM), check the primary orders:
+```
+Call: mcp__kite__get_orders
+For each primary order placed in Step 5:
+  - If status == COMPLETE → great, move to Step 6 (GTT placement)
+  - If status == OPEN/PENDING and ltp not yet hit limit:
+       Cancel the primary order (mcp__kite__cancel_order)
+       Then re-evaluate FALLBACK conditions:
+         (a) Stock NOT down >1% from prev close
+         (b) Stock NOT up >2% from prev close
+         (c) Gate B7 still holds at current LTP
+         (d) VIX still < 22
+       If ALL 4 pass:
+         Place fresh LIMIT @ current LTP + 0.05%, validity DAY
+         (cron will re-check ~30 min later, same logic — but only one fallback attempt; after that, skip the trade)
+       Else:
+         Log "fallback failed: [reason]", skip this stock for the day.
+```
+
+Note: Only ONE fallback attempt per stock per day. If the fallback also doesn't fill, no entry today.
 
 ### Step 6 — Place GTT OCO on filled positions
 
