@@ -40,17 +40,27 @@ Search queries (parallel):
 Extract numbers, classify sentiment as: risk-on / risk-off / mixed.
 
 ### Step 4 — India macro
-WebFetch:
-- `https://www.nseindia.com/reports/fii-dii` → FII/DII data yesterday
-- `https://www.moneycontrol.com/markets/indian-indices/` → India VIX, Nifty pre-open indication
 
-WebSearch:
+**Note:** moneycontrol.com is BLOCKED for WebFetch. Use these working sources:
+
+WebFetch (try in order):
+- `https://www.nseindia.com/reports/fii-dii` → FII/DII data yesterday
+- `https://www.trendlyne.com/macro-data/fii-dii-activity/` → fallback
+- `https://www.investing.com/indices/india-vix` → India VIX
+
+WebSearch (always works, primary):
+- `"India VIX live today"`
+- `"FII DII data NSE today"` (cross-check)
 - `"RBI announcement today"` (only if first Friday of month or MPC date)
 - `"SEBI circular today"`
 - `"India USDINR today"`
 
 ### Step 5 — Sector heatmap
-WebFetch: `https://www.moneycontrol.com/stocks/marketstats/sectorperformance.html`
+
+WebFetch (moneycontrol blocked, use these):
+- `https://www.nseindia.com/market-data/live-market-indices` → sector index live values
+- `https://www.trendlyne.com/equity/sectors/` → sector performance fallback
+
 OR WebSearch: `"Nifty sector performance today NSE"`
 
 Note top 2 gaining sectors and bottom 2 losers. Leadership tells us where breakouts will happen.
@@ -89,10 +99,11 @@ A2. WebFetch: https://www.moneycontrol.com/markets/indian-indices/
 
 #### 7b — Shortlist source (52-wk highs + near-highs)
 
-WebFetch (try in order, first one that works):
+WebFetch (try in order, first one that works — moneycontrol blocked):
 - `https://www.nseindia.com/market-data/52-week-high-equity-market` — 52-week highs today
-- `https://www.moneycontrol.com/stocks/marketstats/nsehigh/index.php` — fallback
-- `https://www.moneycontrol.com/stocks/marketstats/nsegainer/index.php` — top gainers (secondary)
+- `https://www.trendlyne.com/equity/52-week-high/` — fallback
+- `https://www.investing.com/equities/52-week-high-india` — secondary
+- `https://chartink.com/screener/52-week-high-stocks-2` — tertiary (free screener)
 
 Parse list. Expect 20-80 stocks.
 
@@ -292,5 +303,5 @@ When you finish, confirm in chat:
 | Kite session expired | Skip Kite calls, use WebSearch/WebFetch only, flag in Slack |
 | WebSearch rate limited | Skip non-critical searches, prioritize held positions |
 | Git push fails | Run `git pull --rebase`, retry once, then stop |
-| NSE website down | Use moneycontrol as fallback |
+| NSE website down | Use trendlyne / investing.com / chartink as fallback (moneycontrol BLOCKED for WebFetch) |
 | No trade found | Fine — silent day, log "no setup" in RESEARCH-LOG.md |

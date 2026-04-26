@@ -11,7 +11,8 @@ Updated by every cron that changes state.
 - **Deployed:** Rs 0 (0%)
 - **Cash available:** Rs 1,00,000 (100%)
 - **Open positions:** 0 / 3 max
-- **Last updated:** 2026-04-24 (initial setup)
+- **Last updated:** 2026-04-26 (Kite holdings/positions reconciled — both empty, clean slate)
+- **Gate A status (last check):** ❌ FAILED — Nifty 500 (22,570) below 200-SMA (23,120). No entries until regime turns.
 
 ---
 
@@ -60,13 +61,11 @@ Updated by every cron that changes state.
 
 ## LEGACY v1/v2 POSITIONS (from previous strategy)
 
-**Note:** 4 positions from April 2026 v2 execution — pre-date v3 rotation strategy.
+**RECONCILIATION 2026-04-26:** `mcp__kite__get_holdings` returned empty array. The legacy SBIN/POWERGRID/NTPC/COALINDIA positions are **NOT in this Zerodha account (AMT521)**. Either previously sold, or held in a different broker. Removing from active tracking.
 
-| Stock | Shares | Entry | Capital | Action under v3 |
-|---|---|---|---|---|
-| SBIN | 1 | ~Rs 770 | Rs 770 | Hold until 12-month LTCG mark (April 2027) unless fundamentally broken |
-| POWERGRID | 1 | ~Rs 288 | Rs 288 | Hold until 12-month LTCG mark |
-| NTPC | 1 | ~Rs 355 | Rs 355 | Hold until 12-month LTCG mark |
-| COALINDIA | 1 | ~Rs 430 | Rs 430 | Hold until 12-month LTCG mark |
+If they reappear in a future `get_holdings` call, restore the table. Until then, this section is informational only.
 
-*Total capital locked: ~Rs 1,843 (negligible vs Rs 1L rotation budget). These are kept as long-term holdings, separate from the v3 weekly rotation pool. They do NOT count toward the 3-position rotation limit. If any of them later surfaces through the Nifty 500 momentum scan as a valid v3 entry, we simply don't double-up.*
+~~| SBIN | 1 | ~Rs 770 | Rs 770 | Hold until 12-month LTCG mark (April 2027) |~~
+~~| POWERGRID | 1 | ~Rs 288 | Rs 288 | Hold until 12-month LTCG mark |~~
+~~| NTPC | 1 | ~Rs 355 | Rs 355 | Hold until 12-month LTCG mark |~~
+~~| COALINDIA | 1 | ~Rs 430 | Rs 430 | Hold until 12-month LTCG mark |~~

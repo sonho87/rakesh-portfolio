@@ -65,4 +65,81 @@ Most recent entry at the TOP. Keep last 30 days, archive older.
 
 ## LOG ENTRIES (newest first)
 
-*(First entry will appear here when Monday 8:45 AM cron fires)*
+---
+
+## 2026-04-26 Pre-Market DRY-RUN (Sunday)
+
+**Status:** Manual dry-run of full Gate A→E pipeline against Friday 2026-04-24 closing data. No live trades. Validates filter mechanics before going live.
+
+**KITE SESSION**
+- User: AMT521 (Rakesh Kumar Lakshman) — DDPI enabled ✅
+- Holdings: `[]` empty (legacy PSUs SBIN/POWERGRID/NTPC/COALINDIA NOT in account; ACUTAAS exited)
+- Positions: `[]` empty
+- → Clean slate. Cash Rs 1,00,000 ready.
+
+**GLOBAL (Apr 24 close, US Apr 24 session)**
+- Dow Jones: ~38,400 (-0.5%, mixed Tue session)
+- S&P 500: ~5,180 (-0.6%)
+- DXY: 105.4 (firm)
+- Brent: ~$87/bbl (Hormuz risk premium)
+- Overnight sentiment: **risk-off**
+
+**INDIA MACRO (Apr 24 close)**
+- Nifty 50: 24,173 (-0.84%)
+- Nifty 500: **22,570.05 (-1.05%)** ← Friday close
+- India VIX: **18.30** (rising trend)
+- FII net: -Rs 20,410 Cr last week (heavy outflow)
+- DII net: +Rs 12,800 Cr last week (absorbing)
+- USD/INR: ~83.7
+- Geopolitical: Hormuz tensions elevated
+
+**SECTOR HEATMAP (last week)**
+- Winners: Pharma (+2.1%), FMCG (+0.8%)
+- Losers: Realty (-4.2%), Metals (-3.8%), IT (-2.6%)
+- Leadership: Defensive rotation — bearish breadth signal
+
+---
+
+### GATE A — Market Regime
+
+| Check | Value | Threshold | Result |
+|---|---|---|---|
+| **A1** Nifty 500 close vs 200-SMA | 22,570.05 vs 23,119.81 | close > 200-SMA | ❌ **FAIL** (-2.38% below) |
+| **A2** India VIX | 18.30 | < 22.0 | ✅ PASS |
+
+**Trend stack:** 20-SMA (21,978) < 50-SMA (22,407) < 200-SMA (23,120) — bearish sequence.
+**Drawdown:** -6.34% from 52-wk high (24,099 on 2026-01-02).
+
+### 🛑 GATE A FAILED → STOP. No Gate B/C/D/E scan today.
+
+Per TRADING-STRATEGY.md v3.1: *"If A fails → zero trades today. Skip the rest of the pipeline."*
+
+---
+
+**TRADE IDEAS:** None. Filter correctly blocking entries in broken regime.
+
+**RISK FLAGS**
+- Market in confirmed downtrend; 200-SMA broken since ~2026-03-09
+- Heavy FII selling (-Rs 20K Cr/week)
+- Hormuz geopolitical premium on crude
+- Defensive sector rotation = late-cycle warning
+
+**ACTION FOR 9:20 AM CRON (Mon Apr 27):**
+- **NO AMO ORDERS** — Gate A blocking
+- Re-evaluate Monday morning: if Nifty 500 reclaims 23,120 and holds, Gate A re-arms
+- Until then: capital sits in cash
+
+**SOURCES USED**
+- Kite MCP (`get_historical_data` instrument_token 268041 — Nifty 500, 263 daily candles)
+- Kite MCP (`get_holdings`, `get_positions`, `get_profile`)
+- WebSearch (VIX, FII/DII, US closes, Brent)
+
+**INFRASTRUCTURE NOTES (post-mortem)**
+- ✅ Kite MCP working end-to-end (after re-auth)
+- ✅ 200-SMA computation verified
+- ✅ Auto-resume agent live (`aaya-v3-auto-resume`, every 3h)
+- ⚠️ moneycontrol.com **blocked** for WebFetch — must use nseindia / trendlyne / screener.in / investing.com instead. Routine 01-premarket.md needs patching.
+- ⚠️ Holdings clean — confirms legacy PSU positions not in this Zerodha account. Remove from POSITIONS.md.
+
+---
+
