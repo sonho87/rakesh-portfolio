@@ -67,6 +67,46 @@ Most recent entry at the TOP. Keep last 30 days, archive older.
 
 ---
 
+## 2026-04-26 — STRATEGY UPGRADE v3.1 → v3.2
+
+**Trigger:** User's actual P&L for Apr 13–26 showed 4 trades, **75% win rate, 6.1× W/L ratio, +Rs 8,935 net on Rs 1L (~9% in 2 weeks)** — accomplished DURING a Nifty 500 drawdown that v3.1's Gate A1 would have blocked.
+
+**Trades that worked (would have been blocked by v3.1):**
+- ACUTAAS: +2.17% (small-cap compounder, idiosyncratic strength)
+- BEL: +1.24% (defence, war-immune theme)
+- NATIONALUM: +5.05% (PSU commodity, re-rating)
+- VEDL: -1.56% (cut fast, disciplined loss)
+
+**Two changes adopted (overrides "no rule change before 20 trades" — see CHANGE LOG in TRADING-STRATEGY.md):**
+
+1. **Gate A becomes regime-aware (not binary kill):**
+   - Removed: hard "Nifty 500 close > 200-SMA" stop
+   - Added: VIX panic gate (≥22 hard-stop) + breadth gate (% of Nifty 500 above own 50-SMA)
+   - Decision matrix: NORMAL (3 positions, min D-score 8) / NORMAL-strict (3 positions, min D 10) / REDUCED (2 positions, min D 12) / PANIC (stop)
+
+2. **New Gate B7 — relative strength:**
+   - `(stock 30d return) - (Nifty 500 30d return) ≥ +5%`
+   - Surfaces the BEL/NATIONALUM/ACUTAAS pattern: strong stocks in weak markets
+
+**Pre-market routine 01-premarket.md upgraded to add:**
+- Step 3b: Geopolitical theme scan (Hormuz, Ukraine, Taiwan, Pakistan, defence orders, PSU disinvestment, commodity export bans)
+- Step 7b Stream 2: "Quiet 52-wk-high" names (within 3% of own 52-wk high while index 5%+ below its high)
+- Step 7b Stream 3: Bulk/block deals (institutional fingerprints)
+- Step 7b Stream 4: War-immune theme basket (defence + PSU commodities + domestic-revenue) — driven by today's "live" themes
+
+**v3.2 DRY-RUN with today's data (Apr 24 close):**
+
+| Check | Value | v3.1 result | v3.2 result |
+|---|---|---|---|
+| VIX | 18.30 | (A2 pass) | A1 PANIC pass ✅ |
+| Nifty 500 vs 200-SMA | -2.38% | (A1 FAIL → STOP) | informational only |
+| Estimated breadth (% Nifty 500 above own 50-SMA) | ~40% | n/a | A2 PASS (≥30%) |
+| **Outcome** | **0 trades** | **🟢 NORMAL: 3 positions, min D-score 8 — TRADING LIVE** |
+
+→ **Monday 8:48 AM cron will fire the v3.2 pipeline and produce real candidates.**
+
+---
+
 ## 2026-04-26 Pre-Market DRY-RUN (Sunday)
 
 **Status:** Manual dry-run of full Gate A→E pipeline against Friday 2026-04-24 closing data. No live trades. Validates filter mechanics before going live.

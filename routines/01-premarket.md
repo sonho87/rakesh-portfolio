@@ -30,14 +30,33 @@ If error → skip to Step 3 but flag in Slack
 If success → proceed
 ```
 
-### Step 3 — Global sentiment (WebSearch)
-Search queries (parallel):
+### Step 3 — Global sentiment + Geopolitical theme scan (WebSearch)
+
+**3a — Standard global sentiment** (parallel):
 - `"SGX Nifty futures live today"` → note the value and % change
 - `"Dow Jones close yesterday"` and `"S&P 500 close yesterday"`
 - `"US dollar index DXY today"`
 - `"Brent crude oil price today"`
 
 Extract numbers, classify sentiment as: risk-on / risk-off / mixed.
+
+**3b — Geopolitical theme scan (NEW v3.2)** — essential context for relative-strength picks:
+
+WebSearch (parallel):
+- `"Israel Iran Hormuz news today"` → impact on oil, defence
+- `"Russia Ukraine war update"` → impact on commodities, defence, fertilisers
+- `"China Taiwan tension news"` → impact on semiconductors, defence
+- `"India Pakistan border news"` → impact on Indian defence stocks
+- `"India defence budget order announcement"` → BEL/HAL/BDL/BEML catalysts
+- `"India PSU disinvestment news"` → PSU re-rating themes
+- `"India commodity export ban news"` → metals, agri exposure
+
+For each event, classify:
+- **War-positive sectors:** Defence (BEL, HAL, BDL, BEML, MAZAGON, COCHINSHIP, GRSE), Oil & Gas (ONGC, OIL), select PSU commodities (NATIONALUM, NMDC, COALINDIA)
+- **War-negative sectors:** IT services (TCS, INFY, WIPRO — global demand sensitive), Aviation (SPICEJET, INDIGO — fuel cost), Discretionary
+- **Neutral / domestic-revenue:** FMCG (HUL, ITC, NESTLEIND), Banks (HDFC, ICICI, SBIN), Domestic infra (LT, ULTRACEMCO)
+
+Note in RESEARCH-LOG.md: which themes are "live" today, expected sector impact, and which Nifty 500 names are positioned to benefit. The Gate D scoring (D5: hot sector +3) should reflect today's geopolitical lean.
 
 ### Step 4 — India macro
 
@@ -75,56 +94,96 @@ If any EMERGENCY FLAG found → send urgent Slack message immediately and mark i
 
 ### Step 7 — Dynamic Nifty 500 Scan (Gates A → E)
 
-**Canonical filter pipeline per `TRADING-STRATEGY.md` v3.1.**
+**Canonical filter pipeline per `TRADING-STRATEGY.md` v3.2.**
 No watchlist. No hand-curation. The filter decides.
 
 ---
 
-#### 7a — Gate A (Market Regime)
+#### 7a — Gate A (Market Regime, regime-aware not binary)
 
 ```
-A1. WebSearch: "Nifty 500 close today" → get nifty500_close
-    Compute: nifty500_sma200 from last 200 daily closes
-    (use mcp__kite__get_historical_data on instrument for NIFTY 500)
-    Check: nifty500_close > nifty500_sma200
+A1. PANIC GATE: India VIX
+    - WebSearch: "India VIX live today"
+    - Fallback: WebFetch https://www.investing.com/indices/india-vix
+    - HARD STOP if VIX ≥ 22
 
-A2. WebFetch: https://www.moneycontrol.com/markets/indian-indices/
-    OR WebSearch: "India VIX today"
-    Check: india_vix < 22
+A2. BREADTH: % of Nifty 500 above own 50-SMA
+    - Fetch Nifty 500 constituent list (https://www.niftyindices.com/IndexConstituent/ind_nifty500list.csv)
+    - Sample ~50-100 random constituents to estimate breadth
+      (sampling is fine — avoids 500 individual Kite calls)
+    - For each: mcp__kite__get_historical_data, compute sma_50, check close > sma_50
+    - breadth_pct = count(stocks above 50-SMA) / sample_size
 ```
 
-**If EITHER A1 or A2 fails → STOP the scan. Log "Gate A failed — no trades today" in RESEARCH-LOG.md. Skip Steps 7b-7e entirely.**
+**Decision matrix (TRADING-STRATEGY.md v3.2):**
+
+| VIX | Breadth | Mode | Max positions | Min D-score |
+|---|---|---|---|---|
+| ≥ 22 | any | 🛑 PANIC — STOP | 0 | n/a |
+| < 22 | ≥ 30% | 🟢 NORMAL | 3 | 8 |
+| < 22 | < 30% AND VIX > 18 | 🟡 REDUCED | 2 | **12** |
+| < 22 | < 30% AND VIX ≤ 18 | 🟢 NORMAL-strict | 3 | **10** |
+
+**If PANIC → STOP. Log to RESEARCH-LOG.md, exit. Skip Gates B-E entirely.**
+**If NORMAL/REDUCED → proceed to 7b with the appropriate position cap and D-score threshold.**
 
 ---
 
-#### 7b — Shortlist source (52-wk highs + near-highs)
+#### 7b — Shortlist source (multi-stream, v3.2)
 
-WebFetch (try in order, first one that works — moneycontrol blocked):
-- `https://www.nseindia.com/market-data/52-week-high-equity-market` — 52-week highs today
-- `https://www.trendlyne.com/equity/52-week-high/` — fallback
-- `https://www.investing.com/equities/52-week-high-india` — secondary
-- `https://chartink.com/screener/52-week-high-stocks-2` — tertiary (free screener)
+Pull from FOUR streams in parallel and union the results, then intersect with Nifty 500.
 
-Parse list. Expect 20-80 stocks.
+**Stream 1 — 52-wk highs today:**
+- `https://www.nseindia.com/market-data/52-week-high-equity-market`
+- Fallbacks: trendlyne.com / investing.com / chartink.com
 
-Intersect with Nifty 500 membership:
+**Stream 2 — Quiet 52-wk-high names (NEW v3.2):**
+Stocks within 3% of their own 52-wk high WHILE Nifty 500 is ≥5% below its high. These are the "institutional accumulation under the radar" names — the BEL/NATIONALUM pattern.
+
+- `https://chartink.com/screener/stocks-near-52-week-high-1` — generic screener
+- WebSearch: `"Indian stocks near 52 week high today defence"` and `"Indian stocks near 52 week high PSU"`
+- Compute via Kite: for each Nifty 500 stock, (high_52w - close) / high_52w ≤ 0.03
+
+**Stream 3 — Bulk/block deals last 5 sessions (NEW v3.2):**
+Institutional fingerprints. Stocks with FII/DII bulk buys that haven't yet exploded.
+
+- `https://www.nseindia.com/market-data/bulk-block-deals` — last 5 days
+- WebSearch: `"NSE bulk deals this week"`
+
+**Stream 4 — War-immune theme basket (NEW v3.2 — driven by Step 3b):**
+Stocks aligned with today's "live" geopolitical themes from Step 3b.
+- If Hormuz tension high → include defence + ONGC + commodity PSUs
+- If India-Pakistan flare → BEL, HAL, BDL, BEML, MAZAGON, COCHINSHIP, GRSE
+- If Russia-Ukraine fertilizer cycle → CHAMBLFERT, GSFC, COROMANDEL
+- If China commodity supply concern → NATIONALUM, HINDALCO, NMDC, JINDALSTEL
+
+**Union all streams**, dedupe, then intersect with Nifty 500:
 - WebFetch: `https://www.niftyindices.com/IndexConstituent/ind_nifty500list.csv`
-- Keep only stocks present in Nifty 500.
+- Keep only constituents.
 
-Expected result: 10-40 candidates.
+Expected result: 15–60 candidates. Note: more candidates than v3.1 by design — relative-strength check (B7) will prune them tighter than the old A1 did.
 
 ---
 
-#### 7c — Gate B (Momentum, 6 conditions, ALL must pass)
+#### 7c — Gate B (Momentum, 7 conditions, ALL must pass — v3.2)
 
 For each candidate:
 ```
 mcp__kite__get_historical_data (daily, last 260 candles)
 ```
 
-Compute:
+Also fetch Nifty 500 30-day return for B7:
+```
+nifty500_close_today  = candles_n500[-1].close
+nifty500_close_30dago = candles_n500[-30].close
+nifty500_30d_return   = (nifty500_close_today - nifty500_close_30dago) / nifty500_close_30dago
+```
+
+Compute per-stock:
 ```python
 close           = candles[-1].close
+close_30dago    = candles[-30].close
+stock_30d_return = (close - close_30dago) / close_30dago
 high_52w        = max(candle.high for candle in candles[-252:])
 vol_avg_20      = mean(candle.volume for candle in candles[-21:-1])
 vol_last_5      = [candle.volume for candle in candles[-5:]]
@@ -134,6 +193,7 @@ sma_50_today    = mean(candle.close for candle in candles[-50:])
 sma_50_10ago    = mean(candle.close for candle in candles[-60:-10])
 sma_200         = mean(candle.close for candle in candles[-200:])
 dtv             = close * candles[-1].volume
+relative_strength = stock_30d_return - nifty500_30d_return
 ```
 
 Apply checks:
@@ -144,6 +204,7 @@ B3. 50 ≤ rsi_14 ≤ 80
 B4. close > sma_50_today  AND  sma_50_today > sma_50_10ago
 B5. close > sma_200
 B6. dtv ≥ 50,00,000
+B7. relative_strength ≥ 0.05                   # NEW v3.2 — stock outperforms index by 5%+ over 30 days
 ```
 
 Drop any candidate failing any check. Expected survivors: 3-10 stocks.
@@ -233,23 +294,33 @@ Rank finalists by `score` DESC.
 
 ---
 
-#### 7f — Gate E (Portfolio Constraints)
+#### 7f — Gate E (Portfolio Constraints — regime-aware in v3.2)
+
+Pull `mode`, `max_positions`, `min_d_score` from Gate A's decision matrix:
+
+| Mode (from Gate A) | max_positions | min_d_score |
+|---|---|---|
+| 🟢 NORMAL | 3 | 8 |
+| 🟢 NORMAL-strict (low VIX, weak breadth) | 3 | 10 |
+| 🟡 REDUCED (mid VIX, weak breadth) | 2 | 12 |
 
 ```
 E1. If > 2 picks in same sector:
       keep top 2 by score, swap 3rd for next-highest non-same-sector.
 
-E2. Drop any pick with score < 8.
+E2. Drop any pick with score < min_d_score (regime-dependent).
 
 E3. Skip any stock already in open positions (check POSITIONS.md).
 
 E4. Skip any stock where entry_price > Rs 33,000 (can't afford 1 share).
+
+E5. Truncate to top max_positions by D-score.
 ```
 
-Expected final picks: 0-3 stocks.
+Expected final picks: 0–max_positions stocks.
 
 **If 0 picks → log "no setup today" in RESEARCH-LOG.md. Silent day, no Slack.**
-**If 1-3 picks → proceed to Step 8 for entry level calc.**
+**If 1+ picks → proceed to Step 8 for entry level calc.**
 
 ### Step 8 — Calculate entry levels for top-ranked candidates (max 3)
 For each finalist from Step 7e:

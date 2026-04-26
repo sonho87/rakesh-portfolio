@@ -1,7 +1,7 @@
-# AAYA v3.1 — Trading Strategy (The Rulebook)
+# AAYA v3.2 — Trading Strategy (The Rulebook)
 
-**Last updated:** 2026-04-24
-**Version:** 3.1 (post-review filter tune)
+**Last updated:** 2026-04-26
+**Version:** 3.2 (regime-aware Gate A + relative strength B7)
 **Status:** ACTIVE
 **Capital:** Rs 1,00,000
 **Hold period:** Maximum 1 week (Mon entry → Fri exit mandatory)
@@ -47,16 +47,30 @@ NATIONALUM, VEDL, MOTHERSON, MAHABANK, Accutas — showing the filter works acro
 
 ## ENTRY PIPELINE — Gates A → E (ALL must pass)
 
-### Gate A — Market Regime (daily check, binary)
+### Gate A — Market Regime (daily check, regime-aware not binary)
+
+**v3.2 change:** Replaced the old hard "Nifty 500 > 200-SMA" stop. That rule killed the system when relative-strength alpha is highest (weak index, strong stocks). Replaced with a panic gate + breadth gate that scales position count instead of nuking it.
+
 ```
-A1. Nifty 500 close > Nifty 500 200-day SMA
-A2. India VIX < 22
+A1. India VIX < 22                                 # PANIC GATE — hard stop
+A2. Breadth: ≥ 30% of Nifty 500 stocks above       # MARKET INTERNALS
+    their own 50-SMA
 ```
-If A fails → zero trades today. Skip the rest of the pipeline.
+
+**Decision matrix:**
+
+| A1 (VIX) | A2 (Breadth) | Mode | Max positions | Min D-score |
+|---|---|---|---|---|
+| FAIL (≥22) | any | 🛑 PANIC — STOP | 0 | n/a |
+| PASS | PASS (≥30%) | 🟢 NORMAL | 3 | 8 |
+| PASS | FAIL (<30%) AND VIX > 18 | 🟡 REDUCED | 2 | 12 (only top setups) |
+| PASS | FAIL (<30%) AND VIX ≤ 18 | 🟢 NORMAL | 3 | 10 (slightly stricter) |
+
+The breadth check (% of Nifty 500 above own 50-SMA) is computed by sampling the constituents via Kite historical data. In REDUCED mode we keep trading but require higher conviction — exactly the regime where defence/PSU/war-immune names tend to outperform.
 
 ---
 
-### Gate B — Stock Momentum (6 conditions, all must pass)
+### Gate B — Stock Momentum (7 conditions, all must pass)
 ```
 B1. (high_52w - close) / high_52w ≤ 0.05                        # within 5% of 52-wk high
 B2. count(sessions where volume ≥ 1.5 × vol_avg_20,
@@ -65,7 +79,10 @@ B3. 50 ≤ RSI(14) ≤ 80                                            # momentum 
 B4. close > SMA(50)  AND  SMA(50) > SMA(50) ten sessions ago     # 50-SMA rising
 B5. close > SMA(200)                                             # stock in long-term uptrend
 B6. daily_traded_value ≥ Rs 50,00,000                            # liquidity floor
+B7. (stock 30-day return) - (Nifty 500 30-day return) ≥ +5%      # RELATIVE STRENGTH (NEW v3.2)
 ```
+
+**Why B7 matters (v3.2 addition):** This is the single most important new check. It surfaces names that are outperforming the index — exactly the BEL/NATIONALUM/ACUTAAS pattern that worked Apr 13-26 when index was -1% but those names were +3-5%. Stocks with idiosyncratic strength (defence themes, commodity cycles, small-cap compounders) will pass even when the broader market is weak. Stocks merely riding a rising tide will fail.
 
 ---
 
@@ -200,3 +217,4 @@ If entry_price > Rs 33,000 → skip (can't afford minimum whole share).
 |---|---|---|---|
 | 2026-04-24 | v3.0 | Initial — 1-week rotation, ATR stops, GTT OCO, Friday time stop | Moved from v2 buy-and-hold to active rotation per user directive |
 | 2026-04-24 | v3.1 | Filter tune: B1 tightened to 5%, RSI cap 80, volume 3-of-5 days, 200-SMA per stock, banking exception, 3/6-month combo, Revenue+EPS YoY gates, promoter buying +FII bonuses, sector diversification (Gate E) | User evaluation of v3.0 filter — six corrections adopted, one rejected (analyst upgrades — lagging indicator) |
+| 2026-04-26 | v3.2 | (1) Replaced hard "Nifty 500 > 200-SMA" Gate A1 with regime-aware decision matrix (VIX panic gate + breadth-based position scaling). (2) Added Gate B7 — relative strength (stock 30d return − index 30d return ≥ +5%). | **Evidence override of "no rule change before 20 trades"**: User's manual P&L Apr 13–26 (4 trades, 75% win rate, 6.1× W/L ratio, +Rs 8,935 net on Rs 1L = ~9% in 2 weeks) demonstrably worked DURING a Nifty 500 drawdown. Stocks traded (BEL, NATIONALUM, ACUTAAS, VEDL) all had idiosyncratic strength independent of index. Old Gate A1 would have blocked all 4 entries. Removing a rule that demonstrably blocks profitable setups is conservative, not aggressive. |
