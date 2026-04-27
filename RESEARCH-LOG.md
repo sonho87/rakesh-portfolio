@@ -67,6 +67,28 @@ Most recent entry at the TOP. Keep last 30 days, archive older.
 
 ---
 
+## 2026-04-28 (Tue Apr 28) — TENTATIVE Pre-Market (attempted Mon Apr 27 22:00)
+
+**Status:** ❌ ABORTED — Kite session expired. Night research did not run.
+
+**Failure mode:** `mcp__kite__get_profile` returned session error at Step 2. All Gate B Kite pulls skipped.
+
+**Action taken:**
+- Kite re-auth link sent to Slack (D0AQCRLP7SP) at 22:00 IST
+- No tentative finalists written — no data available
+
+**Morning cron instruction (8:48 AM):**
+- Must run FULL Gate B→E scan (no cached tentatives to build from)
+- First: verify Kite session is live via `get_profile`
+- Breadth cache: MISSING → must refresh (sample 80 Nifty 500 stocks)
+- Quality cache: MISSING → fetch fresh from screener.in for all Gate B survivors
+- All 4 candidate streams (52-wk highs, quiet highs, block deals, war-immune) must be rebuilt
+- This will be a heavier morning cron run — budget extra tool calls
+
+**Cache status:** breadth-cache.json MISSING | quality-cache.json MISSING
+
+---
+
 ## 2026-04-26 — STRATEGY UPGRADE v3.1 → v3.2
 
 **Trigger:** User's actual P&L for Apr 13–26 showed 4 trades, **75% win rate, 6.1× W/L ratio, +Rs 8,935 net on Rs 1L (~9% in 2 weeks)** — accomplished DURING a Nifty 500 drawdown that v3.1's Gate A1 would have blocked.
