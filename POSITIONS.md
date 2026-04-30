@@ -11,8 +11,8 @@ Updated by every cron that changes state.
 - **Deployed:** Rs 0 (0%)
 - **Cash available:** Rs 1,00,000 (100%)
 - **Open positions:** 0 / 3 max
-- **Last updated:** 2026-04-26 (Kite holdings/positions reconciled — both empty, clean slate)
-- **Gate A status (last check):** ❌ FAILED — Nifty 500 (22,570) below 200-SMA (23,120). No entries until regime turns.
+- **Last updated:** 2026-04-29 night research (Apr 30 session)
+- **Gate A status (last check):** ✅ NORMAL — VIX ~17.5 (< 22 panic gate). Nifty 500 = 22,862. No open positions due to Gate B failures, not Gate A.
 
 ---
 

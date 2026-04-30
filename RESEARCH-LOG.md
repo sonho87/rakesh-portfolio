@@ -67,6 +67,74 @@ Most recent entry at the TOP. Keep last 30 days, archive older.
 
 ---
 
+## 2026-04-30 (Wed Apr 30) — Pre-Market Research (night Apr 29)
+
+**Status:** ✅ COMPLETE — Full Gate B scan ran. Gate C/D/E skipped — no survivors.
+
+**Gate A — Regime: NORMAL**
+- India VIX: ~17.5 (below 22 panic gate) ✅
+- India-Pakistan "Operation Sindoor" war theme — elevated event risk but VIX held
+- Nifty 500 (Apr 29 close): 22,862 — above its 50-SMA (visual confirm from prior session)
+- Breadth check deferred (no Gate B survivors; Gate A verdict sufficient for NO-TRADE decision)
+- **Mode: NORMAL** (VIX < 22 + breadth likely ≥ 30%)
+
+**Pool Constructed (15 stocks, 4 streams)**
+
+| Stream | Stocks |
+|--------|--------|
+| Defence/PSU-war theme | GRSE, COCHINSHIP, BEL, HAL, BHARATFORG |
+| PSU commodities/domestic | COALINDIA, ONGC, ADANIPORTS, NLCINDIA |
+| Pharma/domestic-revenue | GLENMARK, EMCURE |
+| Quiet 52-wk highs / Block deals | WELCORP, HEG, HINDALCO, BANDHANBNK |
+
+**Gate B Results — 0 / 15 PASS**
+
+| Stock | B1 (52wH) | B2 (vol) | B3 (RSI) | B4 (SMA50) | B5 (SMA200) | B7 (RS) | RESULT |
+|-------|-----------|----------|----------|------------|-------------|---------|--------|
+| GRSE | ❌ 13.1% | ❌ 1/5 | ❌ 88 | ✅ | ✅ | ✅ | ❌ FAIL |
+| COCHINSHIP | ❌ 41.1% | ❌ 1/5 | ✅ 61 | ✅ | ✅ | ✅ | ❌ FAIL |
+| BEL | ❌ 6.6% | ❌ 1/5 | ✅ 64 | ✅ | ✅ | ✅ | ❌ FAIL |
+| HAL | ❌ 15.9% | ❌ 1/5 | ✅ 55 | ✅ | ✅ | ✅ | ❌ FAIL |
+| BHARATFORG | ✅ 0.8% | ❌ 2/5 | ✅ 68 | ✅ | ✅ | ✅ | ❌ FAIL |
+| COALINDIA | ❌ 6.1% | ❌ 0/5 | ✅ 59 | ✅ | ✅ | ✅ | ❌ FAIL |
+| ONGC | ✅ 2.3% | ❌ 2/5 | ✅ 64 | ✅ | ✅ | ✅ | ❌ FAIL |
+| ADANIPORTS | ✅ 2.0% | ❌ 1/5 | ❌ 86 | ✅ | ✅ | ✅ | ❌ FAIL |
+| NLCINDIA | ✅ 4.4% | ❌ 1/5 | ❌ 84 | ✅ | ✅ | ✅ | ❌ FAIL |
+| WELCORP | ✅ ~0% | ❌ 1/5 | ❌ 99 | ✅ | ✅ | ✅ | ❌ FAIL |
+| GLENMARK | ✅ ~2% | ❌ 1/5 | ❌ 81 | ✅ | ✅ | ✅ | ❌ FAIL |
+| EMCURE | ✅ 0.0% | ❌ 2/5 | ✅ 66 | ✅ | ✅ | ❌ RS+4.2% | ❌ FAIL |
+| HEG | ✅ 1.5% | ❌ 0/5 | ✅ 68 | ✅ | ✅ | ✅ RS+26.5% | ❌ FAIL |
+| HINDALCO | ✅ 0.7% | ❌ 0/5 | ✅ 69 | ✅ | ✅ | ✅ RS+18.5% | ❌ FAIL |
+| BANDHANBNK | ✅ 0.0% | ❌ 1/5 | ✅ 73 | ✅ | ✅ | ✅ RS+24.9% | ❌ FAIL |
+
+**Dominant failure mode: B2 (sustained volume)**
+- Defence/war stocks had single-day price-spike volumes but only 1 of 5 recent sessions ≥ 1.5× 20-day avg
+- BANDHANBNK was closest: 127.8M shares on Apr 29 (vs 9.6M avg) — but only 1/5 sessions qualified; baseline elevated from Feb-Mar institutional accumulation
+- HEG/HINDALCO: massive late-Mar block-deal session already in the 20-day avg window, inflating threshold; recent low-vol quiet uptrend ≠ sustained breakout vol
+- RSI overbought (B3) secondary failure: WELCORP (99!), GLENMARK (81), ADANIPORTS (86), NLCINDIA (84)
+
+**Notable observations for watchlist:**
+- HINDALCO: B1 ✅ B3 ✅ B4 ✅ B5 ✅ B7 ✅ — only B2 fails. China metal-demand / India infra theme intact. Re-check next session.
+- BANDHANBNK: Extraordinary single-day breakout (+40% above 30d base) on 127M shares. Watch if vol sustains over next 2-3 sessions — potential B2 pass next week.
+- BHARATFORG: B2=2/5 close miss; needs 1 more high-vol day. Defence/auto dual catalyst.
+
+**Gate C/D/E:** SKIPPED — no Gate B survivors.
+
+**ACTION FOR APRIL 30:**
+- **NO ENTRIES.** Zero candidates passed Gate B.
+- Hold Rs 1,00,000 cash (100%).
+- Open positions: 0/3.
+
+**Key risk to watch intraday:**
+- Operation Sindoor escalation could cause sharp gap-up on defence names or gap-down panic on broad market
+- Do NOT chase gap-ups — wait for Gate B confirmation on a full session close
+
+**ACTION FOR 9:20 AM CRON:**
+- NO ENTRIES today — all 15 Gate B candidates failed B2 (sustained volume)
+- Monitor: HINDALCO, BANDHANBNK, BHARATFORG for vol follow-through
+
+---
+
 ## 2026-04-28 (Tue Apr 28) — TENTATIVE Pre-Market (attempted Mon Apr 27 22:00)
 
 **Status:** ❌ ABORTED — Kite session expired. Night research did not run.
